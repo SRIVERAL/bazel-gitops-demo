@@ -1,0 +1,13 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Copiamos la carpeta 'saludo' completa que contiene tanto el binario como los runfiles
+COPY deploy_dist/saludo/ /app/saludo/
+
+# Damos permisos al binario dentro de su nueva casa
+RUN chmod +x /app/saludo/app_saludo
+
+# EJECUCIÓN: El secreto es ejecutarlo desde su ubicación relativa
+# Esto permite que el script encuentre './app_saludo.runfiles' correctamente
+CMD ["sh", "-c", "/app/saludo/app_saludo && tail -f /dev/null"]

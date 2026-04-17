@@ -1,0 +1,41 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ "develop" ]
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout del código
+        uses: actions/checkout@v4
+
+      # Usamos una acción oficial para instalar Bazel
+      - name: Instalar Bazel
+        uses: bazelbuild/setup-bazelisk@v2
+
+      - name: Compilar con Bazel
+        run: |
+          bazel build //saludo:app_saludo
+          # Preparamos la carpeta de distribución igual que hicimos manualmente
+          mkdir -p deploy_dist/saludo
+          cp $(bazel info bazel-bin)/saludo/app_saludo ./deploy_dist/saludo/
+          cp -RL $(bazel info bazel-bin)/saludo/app_saludo.runfiles ./deploy_dist/saludo/
+
+      - name: Login en Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Construir y subir imagen
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile.prod
+          push: true
+          # Usamos el hash del commit como tag para que cada imagen sea única
+          tags: |
+            ${{ secrets.DOCKER_USERNAME }}/saludo-ekumen:latest
+            ${{ secrets.DOCKER_USERNAME }}/saludo-ekumen:${{ github.sha }}
