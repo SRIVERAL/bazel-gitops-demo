@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: app-saludo-policy
+  namespace: default
+spec:
+  podSelector:
+    matchLabels:
+      app: app-saludo # Se aplica a nuestros pods de saludo
+  policyTypes:
+  - Ingress
+  ingress:
+  # Regla 1: Permitir tráfico HTTP (Puerto 80) desde cualquier lado (o podrías restringirlo al Ingress)
+  - ports:
+    - protocol: TCP
+      port: 80
+  # Regla 2: Permitir que Prometheus (en el namespace monitoring) entre al puerto 8000
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: monitoring
+    ports:
+    - protocol: TCP
+      port: 8000
