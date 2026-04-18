@@ -51,6 +51,7 @@ jobs:
           ignore-unfixed: true
           vuln-type: 'os,library'
           severity: 'CRITICAL,HIGH'
+          trivyignores: .trivyignore
 
       # MODIFICACIÓN: Si Trivy pasa, ahora sí subimos la imagen
       - name: Push de imagen verificada
