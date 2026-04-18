@@ -20,7 +20,7 @@ spec:
         fsGroup: 1000
       containers:
       - name: saludo-container
-        image: sriveraloaiza/saludo-ekumen:latest # El pipeline actualizará esto
+        image: sriveraloaiza/saludo-ekumen:52806da06deb94d4ccc2673f9931bb339c0b0f8d
         ports:
         - containerPort: 80
         # Configuración de seguridad a nivel de Contenedor
