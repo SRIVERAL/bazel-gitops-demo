@@ -1,13 +1,20 @@
 FROM python:3.11-slim
 
+# Creamos un grupo y un usuario sin privilegios
+# Usamos un ID fijo (1000) para facilitar la configuración en K8s
+RUN groupadd -g 1000 ekumen && \
+    useradd -u 1000 -g ekumen -m -s /bin/bash ekumen_user
+
 WORKDIR /app
 
-# Copiamos la carpeta 'saludo' completa que contiene tanto el binario como los runfiles
-COPY deploy_dist/saludo/ /app/saludo/
+# Copiamos los archivos asegurando que el nuevo usuario sea el dueño (--chown)
+COPY --chown=ekumen_user:ekumen deploy_dist/saludo/ /app/saludo/
 
-# Damos permisos al binario dentro de su nueva casa
+# Damos permisos de ejecución al binario
 RUN chmod +x /app/saludo/app_saludo
 
-# EJECUCIÓN: El secreto es ejecutarlo desde su ubicación relativa
-# Esto permite que el script encuentre './app_saludo.runfiles' correctamente
+# Cambiamos el contexto de ejecución al usuario no-root
+USER ekumen_user
+
+# Ejecutamos el binario
 CMD ["sh", "-c", "/app/saludo/app_saludo && tail -f /dev/null"]

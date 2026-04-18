@@ -3,23 +3,32 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: app-saludo
-  labels:
-    app: saludo
 spec:
-  replicas: 2 # Vamos a correr 2 instancias para probar la alta disponibilidad
+  replicas: 2
   selector:
     matchLabels:
-      app: saludo
+      app: app-saludo
   template:
     metadata:
       labels:
-        app: saludo
+        app: app-saludo
     spec:
+      # Configuración de seguridad a nivel de Pod
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        fsGroup: 1000
       containers:
       - name: saludo-container
-        image: sriveraloaiza/saludo-ekumen:v6 # Usaremos una imagen base por ahora para probar el flujo
-        #command: ["python", "-c"]
-        #args: ["import time; print('¡Hola Ekumen desde K8s!'); time.sleep(3600)"]
+        image: sriveraloaiza/saludo-ekumen:latest # El pipeline actualizará esto
+        ports:
+        - containerPort: 80
+        # Configuración de seguridad a nivel de Contenedor
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+              - ALL
 ---
 apiVersion: v1
 kind: Service
