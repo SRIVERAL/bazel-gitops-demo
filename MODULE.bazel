@@ -11,12 +11,12 @@ module(name = "mi_proyecto_bazel", version = "1.0")
 bazel_dep(name = "rules_python", version = "1.7.0")
 
 python = use_extension("@rules_python//python/extensions:python.bzl", "python")
-python.toolchain(python_version = "3.11", is_default = True)
+python.toolchain(python_version = "3.12", is_default = True)
 
 pip = use_extension("@rules_python//python/extensions:pip.bzl", "pip")
 pip.parse(
     hub_name = "pypi",
-    python_version = "3.11",
+    python_version = "3.12",
     requirements_lock = "//:requirements_lock.txt",
 )
 # Aquí exponemos todas explícitamente para que el Hub no pueda fallar
