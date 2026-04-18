@@ -12,7 +12,5 @@ py_binary(
         "@pypi//charset_normalizer",
         "@pypi//certifi",
         "@pypi//prometheus_client",
-        "@pypi//jaraco_context",
-        "@pypi//wheel",
     ],
 )
