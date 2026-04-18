@@ -20,7 +20,7 @@ spec:
         fsGroup: 1000
       containers:
       - name: saludo-container
-        image: sriveraloaiza/saludo-ekumen:dcf7196ab8216edea69eb68c08cc3df4a13f9c89
+        image: sriveraloaiza/saludo-ekumen:b5c463d7caa8a23cae38f543dcfa2be33ce49537
         ports:
         - containerPort: 80
         # Configuración de seguridad a nivel de Contenedor
