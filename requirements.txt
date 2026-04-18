@@ -7,4 +7,4 @@ certifi==2023.11.17
 prometheus-client==0.20.0
 jaraco.context>=6.1.0
 wheel>=0.46.2
-backports.tarfile
+backports.tarfile==1.2.0
