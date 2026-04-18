@@ -1,5 +1,9 @@
 FROM python:3.11-slim
 
+RUN apt-get update && \
+    apt-get upgrade -y && \
+    rm -rf /var/lib/apt/lists/*
+
 # Creamos un grupo y un usuario sin privilegios
 # Usamos un ID fijo (1000) para facilitar la configuración en K8s
 RUN groupadd -g 1000 ekumen && \
