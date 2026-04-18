@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: saludo-container
-        image: sriveraloaiza/saludo-ekumen:v6 # Usaremos una imagen base por ahora para probar el flujo
+        image: sriveraloaiza/saludo-ekumen:52806da06deb94d4ccc2673f9931bb339c0b0f8d
         #command: ["python", "-c"]
         #args: ["import time; print('¡Hola Ekumen desde K8s!'); time.sleep(3600)"]
 ---
