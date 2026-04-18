@@ -8,22 +8,20 @@ jobs:
   build-and-push:
     runs-on: ubuntu-latest
     permissions:
-      contents: write  # Permite al bot hacer push al repositorio
+      contents: write
     steps:
       - name: Checkout del código
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
-      # Usamos una acción oficial para instalar Bazel
       - name: Instalar Bazelisk (Bazel)
         run: |
           sudo curl -L https://github.com/bazelbuild/bazelisk/releases/latest/download/bazelisk-linux-amd64 -o /usr/local/bin/bazel
           sudo chmod +x /usr/local/bin/bazel
-          bazel --version # Verificación rápida
+          bazel --version
 
       - name: Compilar con Bazel
         run: |
           bazel build //saludo:app_saludo
-          # Preparamos la carpeta de distribución igual que hicimos manualmente
           mkdir -p deploy_dist/saludo
           cp $(bazel info bazel-bin)/saludo/app_saludo ./deploy_dist/saludo/
           cp -RL $(bazel info bazel-bin)/saludo/app_saludo.runfiles ./deploy_dist/saludo/
@@ -34,24 +32,36 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Construir y subir imagen
+      # MODIFICACIÓN: Construimos localmente (load: true) sin subir todavía
+      - name: Construir imagen localmente
         uses: docker/build-push-action@v5
         with:
           context: .
           file: ./Dockerfile.prod
-          push: true
-          # Usamos el hash del commit como tag para que cada imagen sea única
-          tags: |
-            ${{ secrets.DOCKER_USERNAME }}/saludo-ekumen:latest
-            ${{ secrets.DOCKER_USERNAME }}/saludo-ekumen:${{ github.sha }}
+          load: true # Carga la imagen en el demonio de Docker local de la Action
+          tags: ${{ secrets.DOCKER_USERNAME }}/saludo-ekumen:${{ github.sha }}
 
-      # Añade esto después del paso de 'Construir y subir imagen'
+      # NUEVO: Escaneo de Seguridad con Trivy
+      - name: Escaneo de vulnerabilidades (Trivy)
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: '${{ secrets.DOCKER_USERNAME }}/saludo-ekumen:${{ github.sha }}'
+          format: 'table'
+          exit-code: '1' # Detiene el pipeline si hay fallos críticos o altos
+          ignore-unfixed: true
+          vuln-type: 'os,library'
+          severity: 'CRITICAL,HIGH'
+
+      # MODIFICACIÓN: Si Trivy pasa, ahora sí subimos la imagen
+      - name: Push de imagen verificada
+        run: |
+          docker push ${{ secrets.S_DOCKER_USERNAME }}/saludo-ekumen:${{ github.sha }}
+          docker tag ${{ secrets.DOCKER_USERNAME }}/saludo-ekumen:${{ github.sha }} ${{ secrets.DOCKER_USERNAME }}/saludo-ekumen:latest
+          docker push ${{ secrets.DOCKER_USERNAME }}/saludo-ekumen:latest
+
       - name: Actualizar manifiesto de K8s
         run: |
-          # Extraemos el tag corto del commit
           IMAGE_TAG=${{ github.sha }}
-          # Usamos sed para cambiar la imagen en el archivo deployment.yaml
-          # Asegúrate de que la ruta 'k8s/deployment.yaml' sea la correcta en tu repo
           sed -i "s|image: .*|image: ${{ secrets.DOCKER_USERNAME }}/saludo-ekumen:$IMAGE_TAG|g" k8s/deployment.yaml
           
       - name: Commit y Push del cambio en el YAML
