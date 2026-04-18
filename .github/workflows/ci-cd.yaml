@@ -56,7 +56,7 @@ jobs:
       # MODIFICACIÓN: Si Trivy pasa, ahora sí subimos la imagen
       - name: Push de imagen verificada
         run: |
-          docker push ${{ secrets.S_DOCKER_USERNAME }}/saludo-ekumen:${{ github.sha }}
+          docker push ${{ secrets.DOCKER_USERNAME }}/saludo-ekumen:${{ github.sha }}
           docker tag ${{ secrets.DOCKER_USERNAME }}/saludo-ekumen:${{ github.sha }} ${{ secrets.DOCKER_USERNAME }}/saludo-ekumen:latest
           docker push ${{ secrets.DOCKER_USERNAME }}/saludo-ekumen:latest
 
