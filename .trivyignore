@@ -1,0 +1,3 @@
+# Ignorar vulnerabilidades de herramientas de construcción de Python en carpetas de vendor
+CVE-2024-6345
+GHSA-cx63-2mw6-q9hc
