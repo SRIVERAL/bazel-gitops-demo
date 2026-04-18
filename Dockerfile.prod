@@ -1,9 +1,11 @@
 FROM python:3.11-slim
 
-RUN apt-get update && \
-    apt-get upgrade -y && \
+USER root
+# 1. Actualizamos el SO y las herramientas base de Python inmediatamente
+RUN apt-get update && apt-get upgrade -y && \
+    pip install --no-cache-dir --upgrade pip setuptools wheel && \
     rm -rf /var/lib/apt/lists/*
-
+    
 # Creamos un grupo y un usuario sin privilegios
 # Usamos un ID fijo (1000) para facilitar la configuración en K8s
 RUN groupadd -g 1000 ekumen && \
