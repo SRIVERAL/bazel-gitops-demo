@@ -28,7 +28,11 @@ spec:
           name: metrics
         # Configuración de seguridad a nivel de Contenedor
         securityContext:
+          # Evita que el proceso gane más privilegios de los iniciales
           allowPrivilegeEscalation: false
+          # Bloquea el disco: no se pueden crear ni modificar archivos
+          readOnlyRootFilesystem: true
+          # Elimina capacidades del kernel innecesarias (net_raw, etc.)
           capabilities:
             drop:
               - ALL
