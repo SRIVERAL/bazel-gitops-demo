@@ -21,6 +21,7 @@ jobs:
 
       - name: Compilar con Bazel
         run: |
+          bazel run //:requirements.update
           bazel build //saludo:app_saludo
           mkdir -p deploy_dist/saludo
           cp $(bazel info bazel-bin)/saludo/app_saludo ./deploy_dist/saludo/

@@ -5,6 +5,6 @@ idna==3.4
 charset-normalizer==3.3.2
 certifi==2023.11.17
 prometheus-client==0.20.0
-jaraco.context==6.1.0
-wheel==0.46.2
+jaraco.context>=6.1.0
+wheel>=0.46.2
 backports.tarfile
