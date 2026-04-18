@@ -37,9 +37,11 @@ apiVersion: v1
 kind: Service
 metadata:
   name: saludo-service
+  labels:            # <--- AGREGA ESTO
+    app: app-saludo
 spec:
   selector:
-    app: saludo
+    app: app-saludo
   ports:
     - name: http-app
       protocol: TCP
