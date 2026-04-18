@@ -1,0 +1,13 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: app-saludo-monitor
+  labels:
+    release: prometheus # Este label es clave para que Prometheus lo integre
+spec:
+  selector:
+    matchLabels:
+      app: app-saludo
+  endpoints:
+  - port: metrics
+    interval: 15s # Frecuencia con la que Prometheus pedirá los datos

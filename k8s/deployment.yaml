@@ -23,6 +23,9 @@ spec:
         image: sriveraloaiza/saludo-ekumen:b5c463d7caa8a23cae38f543dcfa2be33ce49537
         ports:
         - containerPort: 80
+          name: http-app
+        - containerPort: 8000  # <--- Nuevo puerto para métricas
+          name: metrics
         # Configuración de seguridad a nivel de Contenedor
         securityContext:
           allowPrivilegeEscalation: false
@@ -38,7 +41,12 @@ spec:
   selector:
     app: saludo
   ports:
-    - protocol: TCP
+    - name: http-app
+      protocol: TCP
       port: 80
       targetPort: 80
+    - name: metrics  # <--- Nuevo puerto en el Service
+      protocol: TCP
+      port: 8000
+      targetPort: 8000
   type: ClusterIP
