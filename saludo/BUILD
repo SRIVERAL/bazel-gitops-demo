@@ -11,5 +11,6 @@ py_binary(
         "@pypi//idna",
         "@pypi//charset_normalizer",
         "@pypi//certifi",
+        "@pypi//prometheus_client",
     ],
 )
