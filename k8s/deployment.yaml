@@ -20,7 +20,7 @@ spec:
         fsGroup: 1000
       containers:
       - name: saludo-container
-        image: sriveraloaiza/saludo-ekumen:0c96f2c2f12cfe477c68afd64b86f71634204bac
+        image: sriveraloaiza/saludo-ekumen:dd516ec61f0600bb5f971da5613411cee974c0f5
         ports:
         - containerPort: 80
           name: http-app
