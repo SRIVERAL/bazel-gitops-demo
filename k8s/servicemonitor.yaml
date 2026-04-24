@@ -9,5 +9,7 @@ spec:
     matchLabels:
       app: app-saludo
   endpoints:
-  - port: metrics
+  - name: metrics
+    port: 80
+    targetPort: 8080
     interval: 15s # Frecuencia con la que Prometheus pedirá los datos
