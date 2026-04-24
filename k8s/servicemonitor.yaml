@@ -3,13 +3,11 @@ kind: ServiceMonitor
 metadata:
   name: app-saludo-monitor
   labels:
-    release: prometheus # Este label es clave para que Prometheus lo integre
+    release: prometheus 
 spec:
   selector:
     matchLabels:
       app: app-saludo
   endpoints:
-  - name: metrics
-    port: 80
-    targetPort: 8080
-    interval: 15s # Frecuencia con la que Prometheus pedirá los datos
+  - port: metrics 
+    interval: 15s
